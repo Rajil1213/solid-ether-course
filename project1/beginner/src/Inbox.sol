@@ -19,10 +19,4 @@ contract Inbox {
     function setMessage(string memory newMessage) public {
         message = newMessage;
     }
-
-    // `getMessage` => name of the function
-    // `public view` =>  function type declaration
-    function getMessage() public view returns (string memory) {
-        return message;
-    }
 }
