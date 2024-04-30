@@ -2,11 +2,34 @@
   "name": "scratch",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "solc:run": "ts-node src/scripts/compile.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm eslint .",
+    "lint:fix": "pnpm eslint . --fix",
+    "test": "tsc --noEmit && vitest run"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "^1.4.17",
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "ganache": "^7.9.2",
+    "mocha": "^10.4.0",
+    "prettier": "^3.2.5",
+    "swc": "^1.0.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.3",
+    "web3": "^4.8.0"
+  },
+  "dependencies": {
+    "solc": "^0.8.25"
+  }
 }
