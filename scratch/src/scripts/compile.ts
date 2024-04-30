@@ -24,7 +24,7 @@ const input = {
   settings: {
     outputSelection: {
       [inbox]: {
-        [contract]: ["abi", "evm.bytecode"],
+        [contract]: ["abi", "evm.bytecode.object"],
       },
     },
   },
