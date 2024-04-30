@@ -7,7 +7,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "pnpm eslint .",
     "lint:fix": "pnpm eslint . --fix",
-    "test": "tsc --noEmit && vitest run"
+    "test": "tsc --noEmit && vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "",
