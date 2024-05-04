@@ -1,6 +1,5 @@
 import { Web3 } from "web3";
-import { ENV } from "./constants";
-import { BYTECODE_PREFIX } from "./constants";
+import { ENV, BYTECODE_PREFIX } from "./constants";
 import abi from "../InboxAbi.json";
 import * as path from "path";
 import * as fs from "fs";
