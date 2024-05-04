@@ -1,38 +1,48 @@
 import * as path from "path";
 import * as fs from "fs";
 // solc does not have types
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const solc = require("solc");
 
-import type { ContractAbi } from "web3";
-import { BYTECODE_PREFIX } from "./constants";
-
 const contract = "Inbox";
-const inboxPath = path.resolve(__dirname, "..", "contracts", `${contract}.sol`);
-console.log("Contract Path:\n", inboxPath);
+const contractFilename = "inbox.sol";
 
-const content = fs.readFileSync(inboxPath, "utf-8");
+const contractPath = path.resolve(
+  __dirname,
+  "..",
+  "contracts",
+  contractFilename,
+);
+
+console.log("Contract Path:\n", contractPath);
+
+const content = fs.readFileSync(contractPath, "utf-8");
 console.log("Content:\n", content);
 
-const inbox = "inbox.sol";
 const input = {
   language: "Solidity",
   sources: {
-    [inbox]: {
+    [contractFilename]: {
       content,
     },
   },
   settings: {
     outputSelection: {
-      [inbox]: {
+      [contractFilename]: {
         [contract]: ["abi", "evm.bytecode.object"],
       },
     },
   },
 };
 
-const compiled = JSON.parse(solc.compile(JSON.stringify(input))).contracts[
-  "inbox.sol"
-].Inbox;
+const compiled = JSON.parse(solc.compile(JSON.stringify(input)));
+console.log(compiled);
 
-export const abi: ContractAbi = compiled.abi;
-export const bytecode: string = BYTECODE_PREFIX + compiled.evm.bytecode.object;
+const bytecode: string =
+  compiled.contracts[contractFilename][contract].evm.bytecode.object;
+const byteCodePath: string = path.join(__dirname, "..", "InboxByteCode.bin");
+fs.writeFileSync(byteCodePath, bytecode);
+
+const abi: never[] = compiled.contracts[contractFilename][contract].abi;
+const abiPath: string = path.join(__dirname, "..", "InboxAbi.json");
+fs.writeFileSync(abiPath, JSON.stringify(abi, null, "  "));

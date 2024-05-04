@@ -1,30 +1,56 @@
-import ganache from "ganache";
 import { beforeEach, describe, expect, it } from "vitest";
-import type { ContractAbi, Contract } from "web3";
-import { Web3 } from "web3";
-import { bytecode, abi } from "../scripts/compile";
+import { Contract, ContractAbi, Web3 } from "web3";
+import abi from "../InboxAbi.json";
+import * as fs from "fs";
+import * as path from "path";
+import { ANVIL_ADDR, BYTECODE_PREFIX } from "../scripts/constants";
 
-const web3 = new Web3(ganache.provider());
+const byteCodePath: string = path.join(__dirname, "..", "InboxByteCode.bin");
+const byteCode: string = fs.readFileSync(byteCodePath, "utf8");
+
+// run `anvil` from `foundry` at port 8545
+const web3 = new Web3(new Web3.providers.HttpProvider(ANVIL_ADDR));
+
+const contract = new web3.eth.Contract(abi);
+contract.handleRevert = true;
+
 let accounts: Array<string> = [];
-let contract: Contract<ContractAbi>;
+let txn: Contract<ContractAbi> | undefined;
 
 describe("Inbox Contract", () => {
+  const defaultMessage = "Hello, world!";
+
   beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
     expect(accounts.length).toBeGreaterThan(0);
 
     const contractOwner = accounts[0];
 
-    // Use one of the returned accounts to deploy our contract
-    contract = await new web3.eth.Contract(abi)
-      .deploy({ data: bytecode, arguments: ["Hello, world!"] })
-      .send({
-        from: contractOwner,
-        gas: "1000000",
-      });
+    const deployer = contract.deploy({
+      data: BYTECODE_PREFIX + byteCode,
+      arguments: [defaultMessage],
+    });
+
+    txn = await deployer.send({
+      from: contractOwner,
+      gas: "10000000",
+    });
   });
 
-  it("should deploy the contract correclty", () => {
-    console.log(contract);
+  it("should deploy the contract correctly", () => {
+    expect(txn?.options.address).not.toBeUndefined();
+  });
+
+  it("should have a default message upon deployment", async () => {
+    expect(txn).not.toBeUndefined();
+
+    // Use one of the returned accounts to deploy our contract
+    const address = txn!.options.address;
+
+    const inbox = new web3.eth.Contract(abi, address);
+    inbox.handleRevert = true;
+
+    const message = await txn!.methods.message().call();
+    expect(message).toBe(defaultMessage);
   });
 });
