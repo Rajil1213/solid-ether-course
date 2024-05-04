@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "solc:run": "ts-node src/scripts/compile.ts",
+    "contract:compile": "ts-node src/scripts/compile.ts",
+    "contract:deploy": "ts-node src/scripts/send.ts",
     "typecheck": "tsc --noEmit",
     "lint": "pnpm eslint .",
     "lint:fix": "pnpm eslint . --fix",
@@ -30,6 +31,7 @@
     "web3": "^4.8.0"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "solc": "^0.8.25"
   }
 }
