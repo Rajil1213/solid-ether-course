@@ -8,7 +8,6 @@ import { ANVIL_ADDR, BYTECODE_PREFIX } from "../scripts/constants";
 const byteCodePath: string = path.join(__dirname, "..", "InboxByteCode.bin");
 const byteCode: string = fs.readFileSync(byteCodePath, "utf8");
 
-// run `anvil` from `foundry` at port 8545
 const web3 = new Web3(new Web3.providers.HttpProvider(ANVIL_ADDR));
 
 const contract = new web3.eth.Contract(abi);
