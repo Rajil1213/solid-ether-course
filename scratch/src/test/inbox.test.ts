@@ -47,8 +47,18 @@ describe("Inbox Contract", () => {
     expect(message).toBe(defaultMessage);
   });
 
+  it("can change the message", async () => {
+    expect(accounts.length).toBeGreaterThan(0);
+    const sender = accounts[0];
 
-    const message = await txn!.methods.message().call();
-    expect(message).toBe(defaultMessage);
+    const newMesssage = "Bye!";
+    const txn = inbox!.methods.setMessage(newMesssage).send({
+      from: sender,
+    });
+
+    await expect(txn).resolves.not.toThrow();
+
+    const message = await inbox!.methods.message().call();
+    expect(message).toBe(newMesssage);
   });
 });
