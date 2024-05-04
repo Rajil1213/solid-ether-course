@@ -14,7 +14,7 @@ const contract = new web3.eth.Contract(abi);
 contract.handleRevert = true;
 
 let accounts: Array<string> = [];
-let txn: Contract<ContractAbi> | undefined;
+let inbox: Contract<ContractAbi> | undefined;
 
 describe("Inbox Contract", () => {
   const defaultMessage = "Hello, world!";
@@ -25,29 +25,28 @@ describe("Inbox Contract", () => {
 
     const contractOwner = accounts[0];
 
-    const deployer = contract.deploy({
-      data: BYTECODE_PREFIX + byteCode,
-      arguments: [defaultMessage],
-    });
-
-    txn = await deployer.send({
-      from: contractOwner,
-      gas: "10000000",
-    });
+    inbox = await contract
+      .deploy({
+        data: BYTECODE_PREFIX + byteCode,
+        arguments: [defaultMessage],
+      })
+      .send({
+        from: contractOwner,
+        gas: "10000000",
+      });
   });
 
   it("should deploy the contract correctly", () => {
-    expect(txn?.options.address).not.toBeUndefined();
+    expect(inbox?.options.address).not.toBeUndefined();
   });
 
   it("should have a default message upon deployment", async () => {
-    expect(txn).not.toBeUndefined();
+    expect(inbox).not.toBeUndefined();
 
-    // Use one of the returned accounts to deploy our contract
-    const address = txn!.options.address;
+    const message = await inbox!.methods.message().call();
+    expect(message).toBe(defaultMessage);
+  });
 
-    const inbox = new web3.eth.Contract(abi, address);
-    inbox.handleRevert = true;
 
     const message = await txn!.methods.message().call();
     expect(message).toBe(defaultMessage);
