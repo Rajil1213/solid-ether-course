@@ -3,6 +3,9 @@ cache/
 out/
 lib/
 
+# test artifacts
+lcov.info
+
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/31337/
